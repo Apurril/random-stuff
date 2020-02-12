@@ -1,14 +1,10 @@
+/* eslint-disable no-console */
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import "./App.css";
+import { api, dateBuilder } from "../utils/constants";
+import "./weather-app.css";
 
-const api = {
-  key: "da7210fbe7ed2ef8d985c6cf57889f4f",
-  base: "http://api.openweathermap.org/data/2.5/",
-};
-
-const App = () => {
+const WeatherApp = () => {
   const [query, setQuery] = useState("");
   const [weather, setWeather] = useState({});
 
@@ -24,20 +20,15 @@ const App = () => {
     }
   };
 
-  const dateBuilder = (d) => {
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-    const day = days[d.getDay()];
-    const date = d.getDate();
-    const month = months[d.getMonth()];
-    const year = d.getFullYear();
-
-    return `${day} ${date} ${month} ${year}`;
+  const heatClass = () => {
+    if (typeof weather.main !== "undefined") {
+      return ((weather.main.temp > 16) ? "warm" : "cold");
+    }
+    return "cold";
   };
 
   return (
-    <div className={(typeof weather.main !== "undefined") ? ((weather.main.temp > 16) ? "weather-app warm" : "weather-app") : "weather-app"}>
+    <div className={`weather-app ${heatClass()}`}>
       <main>
         <div className="search-box">
           <input
@@ -68,4 +59,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default WeatherApp;
