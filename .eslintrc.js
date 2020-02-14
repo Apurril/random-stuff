@@ -21,6 +21,7 @@ module.exports = {
   },
   plugins: [
     "react",
+    "react-hooks"
   ],
   settings: {
     react: {
@@ -37,5 +38,7 @@ module.exports = {
       "windows",
     ],
     "react/state-in-constructor": ["error", "never"],
+    "react-hooks/rules-of-hooks": 'error',
+    "react-hooks/exhaustive-deps": 'warn' // <--- THIS IS THE NEW RULE
   },
 };
