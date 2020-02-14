@@ -3,27 +3,53 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 
-import React, { useState, useEffect } from "react";
+import React, {
+  useState, useEffect, useCallback, useReducer,
+} from "react";
 import "./index.css";
 
+const defaultState = {
+  money: 0,
+  farmer: 0,
+};
+
 const App = () => {
-  const [counter, setCounter] = useState(0);
-  const [farmers, setFarmers] = useState(0);
-  const [toggle, setToggle] = useState(true);
   const [tick, setTick] = useState(0);
+  const [toggle, setToggle] = useState(true);
 
-  const handleIncrement = (amount = 1) => {
-    setCounter((prevCounter) => prevCounter + farmers + amount);
-  };
+  const [state, dispatch] = useReducer((currentState, action) => {
+    const { money, farmer } = currentState;
 
-  const handleDecrement = (amount = 1) => {
-    setCounter((prevCounter) => prevCounter - amount);
-  };
+    switch (action.type) {
+      case "IncrementMoney":
+        return {
+          ...currentState,
+          money: money + farmer + action.amount,
+        };
+
+      case "DecrementMoney":
+        return {
+          ...currentState,
+          money: money - action.amount,
+        };
+
+      case "HireWorker":
+        return {
+          ...currentState,
+          [action.worker]: currentState[action.worker] + 1,
+          money: money - action.cost,
+        };
+
+      default:
+        return currentState;
+    }
+  }, defaultState);
+
+  const { money, farmer } = state;
 
   const handleHire = () => {
-    if (counter >= 2) {
-      handleDecrement(2);
-      setFarmers(farmers + 1);
+    if (money >= 2) {
+      dispatch({ type: "HireWorker", worker: "farmer", cost: 2 });
     }
   };
 
@@ -31,11 +57,10 @@ const App = () => {
     setToggle(!toggle);
   };
 
-  const handleTick = () => {
-    setTick((prevTick) => prevTick + 1);
-  };
-
   useEffect(() => {
+    const handleTick = () => {
+      setTick((prevTick) => prevTick + 1);
+    };
     if (toggle) {
       const timer = setTimeout(() => {
         handleTick();
@@ -48,15 +73,16 @@ const App = () => {
   }, [tick, toggle]);
 
   useEffect(() => {
-    handleIncrement();
+    dispatch({ type: "IncrementMoney", amount: 1 });
+    console.log(`Tick ${tick}`);
   }, [tick]);
 
   return (
     <div>
-      <div className="counterDisplay">{`${counter}`}</div>
-      <CustomButton text="Increment" onClick={() => handleIncrement()} />
-      <CustomButton text="Decrement" onClick={() => handleDecrement()} />
-      <CustomButton text={`Hire Farmer (${farmers})`} onClick={handleHire} />
+      <div className="counterDisplay">{`${money}`}</div>
+      <CustomButton text="Increment" onClick={() => dispatch({ type: "IncrementMoney", amount: 1 })} />
+      <CustomButton text="Decrement" onClick={() => dispatch({ type: "DecrementMoney", amount: 1 })} />
+      <CustomButton text={`Hire Farmer (${farmer})`} onClick={handleHire} />
       <CustomButton text={`Toggle (${toggle})`} onClick={handleToggle} />
     </div>
   );
