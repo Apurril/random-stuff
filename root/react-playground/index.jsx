@@ -1,11 +1,7 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+/* eslint-disable consistent-return */
 
-import React, {
-  useState, useEffect, useCallback, useReducer,
-} from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import "./index.css";
 
 const defaultState = {
@@ -74,7 +70,6 @@ const App = () => {
 
   useEffect(() => {
     dispatch({ type: "IncrementMoney", amount: 1 });
-    console.log(`Tick ${tick}`);
   }, [tick]);
 
   return (
